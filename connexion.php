@@ -1,5 +1,5 @@
 <?php
-$dns = 'mysql:host=localhost;dbname=c410_football';
+$dns = 'mysql:host=localhost;dbname=c420_football';
 $utilisateur = 'root';
 $motDePasse = '';
 try
