@@ -33,7 +33,7 @@
 	
 	
 		/************ Requetes  ************/
-		$req_liste_adherent =  $bdd->query("SELECT * FROM `adherent` WHERE actif_adherent = 1 AND id_equipe = $equipeSession order by nom_adherent");
+		$req_liste_adherent =  $bdd->query("SELECT * FROM `adherent` WHERE id_equipe = $equipeSession order by nom_adherent");
 			
 		/************ Fin Requetes  ************/
 	?>
@@ -55,7 +55,7 @@
         <?php
         while ($liste_adherent = $req_liste_adherent->fetch(PDO::FETCH_OBJ)) 
 		{
-        	echo '<li><a HREF="consultation_adherent.php?&num='.$liste_adherent->id_adherent.'">';
+        	echo '<li><a HREF="consultation_adherent_admin.php?&num='.$liste_adherent->id_adherent.'">';
         	if($liste_adherent->top_admin == 1) 
         		echo '<img src="images/siflet.gif" title="admin"/>    --    '; 
         	else  

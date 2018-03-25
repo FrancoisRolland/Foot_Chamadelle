@@ -38,9 +38,9 @@
    	
 		/************ Requetes  ************/
 		$equipeSes =  $_SESSION['id_equipe'];
-
+		
 		$req_liste_saison = $bdd->query("SELECT * FROM saison where top_cloture_saison = 0");
-		$req_liste_equipe = $bdd->query("SELECT * FROM equipe where id_equipe <> $equipeSes");
+		$req_liste_equipe = $bdd->query("SELECT * FROM equipe where id_equipe <> $equipeSes order by nom_equipe");
 				
 				 
 		/************ Fin Requetes  ************/
@@ -81,7 +81,7 @@
             
             <p>
             	<span>Equipe</span>
-            	<select class="contact" name="equipe" id="equipe" required >
+            	<select class="contact" name="lequipe" id="lequipe" required >
             		<?php
 					 	while ($liste_equipe = $req_liste_equipe->fetch(PDO::FETCH_OBJ)) 
 				    	{
@@ -134,30 +134,34 @@
 		
 	if (isset($_GET['ajout']))
 	{
-		 if (isset($_GET['saison']) && isset($_GET['equipe']) && isset($_GET['date']) && isset($_GET['code_domicile']))
+		
+		 if (isset($_GET['saison']) && isset($_GET['lequipe']) && isset($_GET['date']))
 		 {
 		 	 $saison 		= $_GET['saison'];
-			 $equipe 		= $_GET['equipe'];
-			 $date   		= $_GET['date']; 
-			 $code_domicile = $_GET['code_domicile']; 
+			 $lequipe 		= $_GET['lequipe'];
+			 $date   		= $_GET['date'];  
 		 } 
-		 if($code_domicile == "")
+	
+		 if(isset($_GET['code_domicile']))
 		 {
-			$equipeDom = $equipe;
-			$equipeExt = $equipeSes;
+		 	$equipeExt = $lequipe;
+			$equipeDom = $equipeSes;
 		 }
 		 else
 		 {
-			$equipeExt = $equipe;
-			$equipeDom = $equipeSes;
-		 }
+		 	$equipeDom = $lequipe;
+			$equipeExt = $equipeSes;
+			
+		 
+		}
+
 		 $explodmot=explode("/" , $date);
 		 $dateSql = $explodmot[2]."-".$explodmot[1]."-".$explodmot[0];
 		 $journee = $explodmot[2].$explodmot[1].$explodmot[0];	
 		
 		 $requete_match = "INSERT INTO `match` VALUES ('',$equipeExt,'$dateSql',$saison,NULL,NULL,$equipeDom,0,0,$journee)";
 		 $bdd->exec($requete_match);
-		 
+		
 		 // Récupérer le dernier match ajouté
 		 $numMatch = $bdd->lastInsertId();
 
@@ -168,6 +172,7 @@
 		 	$numAdherent = $liste_adherent->id_adherent;
 			$bdd->exec("INSERT INTO participation_match VALUES ($numMatch,$numAdherent,'null','null')");
 		 }
+
 		 ?>
 		 <script> alert("Match ajouté"); </script>
 		 <?php

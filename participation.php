@@ -125,11 +125,11 @@
 
       <div class="content">
         <?php
-        echo '<img style="float: left; vertical-align: middle; margin: 0 10px 0 0;" src="images/page.png" /><h1 style="margin: 15px 0 0 0;">Match du '.$dateMatch.' '.$detail_match->nom_e1.' contre '.$detail_match->nom_e2.'</h1>';
+        echo '<img style="float: left; vertical-align: middle; margin: 0 10px 0 0;" src="images/page.png" /><h1 style="margin: 15px 0 0 0;">Match du '.$dateMatch.'</h1>';
 		?>
 		
-		<form action="#" method="post">
-          <div class="form_settings">
+    <form action="#" method="post">
+        <div class="form_settings">
 			  <p><span>Participation au match:</span> 
 			  	Oui
 			  	<input class="checkbox" type="radio" name="match" value="oui" <?php if($choixMatch=="oui") echo("checked"); ?>/>
@@ -146,14 +146,23 @@
 			  	Je sais pas 
 			  	<input class="checkbox" type="radio" name="repas" value="null" <?php if($choixRepas=="null") echo("checked"); ?> />
 			  </p>
-			  <input class="submit" type="submit" name="validation_participation" value="Valider" />	
-          </div>
-		</form>
+			  <input style="margin:10px;float:center;width:49%" class="submit" type="submit" name="validation_participation" value="Valider" />
+                          </br>
+                          </br>
+
+        </div>
+    </form>
+        
+        <?php
+            echo '<h1 style="margin:10px;float:left;width:49%">'.$detail_match->nom_e1.' </h1>';
+            echo '<h1 style="margin:10px 0 0 330px">'.$detail_match->nom_e2.' </h1>';
+	?>
 			
-		 <div id="accordion" style="margin-top:10px;float:left;width:49%">
-		 
+        
+                        
+	<div id="accordion" style="margin-top:10px;float:left;width:49%">
+                        
 			<h2>Participants au Match </h2>
-			
 			<div>
 				<?php
 					while ($match_oui_dom = $req_match_oui_dom->fetch(PDO::FETCH_OBJ))
@@ -164,14 +173,14 @@
 			</div>
 			
 			<h2>Participants au Repas</h2>
+                        <div>
 				<?php
 					while ($repas_oui_dom = $req_repas_oui_dom->fetch(PDO::FETCH_OBJ))
 					{
 						echo'<li><FONT size="2pt">'.$repas_oui_dom->nom_adherent.' - '.$repas_oui_dom->prenom_adherent.'</FONT></li>';
 					} 
 				?>
-			<div>
-				
+                        
 			</div>
 			
 			<h2>Réponses incompletes</h2>

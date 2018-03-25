@@ -25,14 +25,14 @@ $req_itineraire_journee=$bdd->query("SELECT e1.id_equipe as id_e1,
 						   
 $req_trouve_adresse =  $bdd->query("SELECT * FROM adherent WHERE id_adherent =$id_adherent");
 	
-								$itineraire_journee = $req_itineraire_journee->fetch(PDO::FETCH_OBJ);
-								$equipe1 = $itineraire_journee->test;
+							    $itineraire_journee = $req_itineraire_journee->fetch(PDO::FETCH_OBJ);
+							    $equipe1 = $itineraire_journee->test;
 		
-								$trouve_adresse = $req_trouve_adresse->fetch(PDO::FETCH_OBJ);
+							    $trouve_adresse = $req_trouve_adresse->fetch(PDO::FETCH_OBJ);
 							    $adresse = $trouve_adresse->rue_adherent;
 							    $cp = $trouve_adresse->code_postale_adherent;
 							    $ville = $trouve_adresse->bureau_distributeur_adherent;
-							    $adresse_adherent = $adresse.$cp.$ville;
+							    $adresse_adherent = $adresse." ".$cp." ".$ville;
 
 										    
 }
@@ -91,19 +91,19 @@ else
 	          echo '<h3>Prochaine Rencontre</h3>';
 	          
 	          echo '<ul>';
-	            echo'<li>'.$itineraire_journee->nom_e1.'</li>';
-	            echo'<li>VS</li>';
-	            echo'<li>'.$itineraire_journee->nom_e2.'</li>';
-				echo'</br>';
-					echo '<li><a target="_blank" href="http://maps.google.com/maps?saddr='.$adresse_adherent.'&daddr='.$equipe1.'">Itinéraire vers le stade</a></li>';
-	          echo'</ul>';
+	            echo'<li class="content">'.$itineraire_journee->nom_e1.'</li>';
+	            echo'<li>CONTRE</li>';
+	            echo'<li class="content">'.$itineraire_journee->nom_e2.'</li>';
+		  echo'</ul>';
+                  echo'<br/><a class="content" target="_blank" href="http://maps.google.com/maps?saddr='.$adresse_adherent.'&daddr='.$equipe1.'">Itinéraire vers le stade</a></li>';
+	          
 	        }
 	        else
 	        {
 		        echo'<h3>Prochaine Journée</h3>';
 		        echo'<ul>';
-	            echo 	'<li>'.$dateMatch2.'</li>';
-				echo'</ul>';
+	                echo'<li>'.$dateMatch2.'</li>';
+		        echo'</ul>';
 		        
 	        }
 	        ?>
@@ -115,9 +115,9 @@ else
         <div class="sidebar">
           <h3>Les nouvelles du front</h3>
           <ul>
-            <li><a href="#">Message 1 klfjldgdf gjfdmljùgfd j gmfdlkmlgfd jgkfd gjfd rfhdsgfdshgfd l</a></li>
-            <li><a href="#">Message 1 klfjldgdf gjfdmljùgfd j gmfdlkmlgfd jgkfd gjfd rfhdsgfdshgfd l</a></li>
-            <li><a href="#">Message 1 klfjldgdf gjfdmljùgfd j gmfdlkmlgfd jgkfd gjfd rfhdsgfdshgfd l</a></li>
+            <li><a href="#">Remise en ligne du site</a></li>
+            <li><a href="#">A venir la saisie des résultats</a></li>
+            <li><a href="#">A venir la consultation des résultats</a></li>
           </ul>
         </div> 
         

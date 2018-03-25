@@ -121,8 +121,8 @@
         echo '<img style="float: left; vertical-align: middle; margin: 0 10px 0 0;" src="images/page.png" /><h1 style="margin: 15px 0 0 0;">Match du '.$dateMatch.' '.$detail_match->nom_e1.' contre '.$detail_match->nom_e2.'</h1>';
 		?>
 		
-		<form action="#" method="post">
-          <div class="form_settings">
+        <form action="#" method="post">
+            <div class="form_settings">
 			  <p><span>Participation au match:</span> 
 			  	Oui
 			  	<input class="checkbox" type="radio" name="match" value="oui" <?php if($choixMatch=="oui") echo("checked"); ?>/>
@@ -140,10 +140,14 @@
 			  	<input class="checkbox" type="radio" name="repas" value="null" <?php if($choixRepas=="null") echo("checked"); ?> />
 			  </p>
 			  <input class="submit" type="submit" name="valider" value="Valider" />	
-          </div>
-		</form>
-			
-		<div id="ongletsDom" style="margin-top:10px;float:left;width:48%">
+            </div>
+	</form>
+            
+            <?php	
+                echo '<h1 style="margin: 15px 0 0 0;">'.$detail_match->nom_e1.' contre '.$detail_match->nom_e2.'</h1>';
+            ?>	
+	    
+          <div id="ongletsDom" style="margin-top:10px;float:left;width:48%">
 			<ul>
 				<li><a href="#onglet1"><font size="1px">Participants au Match</font></a></li>
 				<li><a href="#onglet2"><font size="1px">Participants au Repas</font></a></li>

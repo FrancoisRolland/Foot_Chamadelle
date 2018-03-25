@@ -3,5 +3,5 @@
 </div>
 <footer>
   <p><a href="index.php">Accueil</a> | <a href="galer.html">Galerie</a> | <a href="contact.html">Contacter le webmaster</a></p>
-  <p>Copyright &copy; Foot Chamadelle |  Adapté par Garcia Benjamin | Pensé par css3templates </p>
+  <p>Copyright &copy; Foot Chamadelle |  Adapté par Garcia Benjamin et ROLLAND François | Pensé par css3templates </p>
 </footer>
