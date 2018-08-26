@@ -1,4 +1,4 @@
-@font-face { 
+﻿@font-face { 
   font-family: Yanone Kaffeesatz; 
     src: url('../fonts/YanoneKaffeesatz-Regular.eot'); 
     src: local(Yanone Kaffeesatz), url('../fonts/YanoneKaffeesatz-Regular.ttf'); 
@@ -382,7 +382,7 @@ footer a:hover {
 .form_settings .checkbox { 
   margin: 4px 0; 
   padding: 0; 
-  width: 14px;
+  width: 15px;
   border: 0;
   background: none;
 }
@@ -399,13 +399,40 @@ table {
   margin: 10px 0 30px 0;
 }
 
+.tableLigneVerticale {
+  border: solid 0.1em transparent;
+  border-right-color: red;
+  width: auto;
+ }
+ 
 table tr th, table tr td { 
   background: #3B3B3B;
   color: #FFF;
   padding: 7px 4px;
   text-align: left;
 }
-  
+
+.tableCenter{ 
+  background: #3B3B3B;
+  color: #000;
+  padding: 7px 4px;
+  text-align: center;
+}
+
+.tableRight{ 
+  background: #3B3B3B;
+  color: #000;
+  padding: 7px 4px;
+  text-align: right;
+}
+
+.tableLeft{ 
+  background: #3B3B3B;
+  color: #000;
+  padding: 7px 4px;
+  text-align: left;
+}
+
 table tr td { 
   background: #E5E5DB;
   color: #47433F;
@@ -592,5 +619,9 @@ ul#nav li a:hover,ul#nav li a:focus {
 
 .error{
 	color:#de3737;
+}
+
+.pseudo{
+background-color:yelow;
 }
 
