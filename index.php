@@ -24,7 +24,7 @@
   
   <script>
    $(function() {
-  		//$( "#new_date" ).datepicker();
+        $( "#new_date" ).datepicker();
   	});
   </script>
 </head>
@@ -45,24 +45,24 @@
 		/************ Requetes  ************/
 		if(!isset($_SESSION['id_equipe']))
 		{
-			$req_prochaine_journee=$bdd->query("SELECT * from `match` WHERE (date_match-$ToD)>0 order by date_match LIMIT 1");
+			$req_prochaine_journee=$bdd->query("SELECT * from `match` WHERE (date_match-$ToD+1)>0 order by date_match LIMIT 1");
 			$prochaine_journee = $req_prochaine_journee->fetch(PDO::FETCH_OBJ);
 			$proJournee = $prochaine_journee->id_journee;
 
 			$req_match_journee=$bdd->query("SELECT e1.id_equipe as id_e1,
-												   e1.nom_equipe as nom_e1,
-												   e2.id_equipe as id_e2,
-												   e2.nom_equipe as nom_e2,
-												   m.id_match,
-												   m.date_match 
-												   FROM `match` m 
-												   JOIN equipe as e1 ON e1.id_equipe = m.id_equipe_dom 
-												   JOIN equipe as e2 ON e2.id_equipe = m.id_equipe 
-												   WHERE (m.date_match-$ToD) > 0 AND m.id_journee = $proJournee
-												   order by m.date_match");
-												 	
-
-		
+                                                               e1.nom_equipe as nom_e1,
+                                                               e2.id_equipe as id_e2,
+                                                               e2.nom_equipe as nom_e2,
+                                                               m.id_match,
+                                                               m.date_match,
+                                                               m.top_annulation_match,
+                                                               m.nb_but_equipe1,
+                                                               m.nb_but_equipe2
+                                                               FROM `match` m 
+                                                               JOIN equipe as e1 ON e1.id_equipe = m.id_equipe_dom 
+                                                               JOIN equipe as e2 ON e2.id_equipe = m.id_equipe 
+                                                               WHERE (m.date_match-$ToD+1) > 0 AND m.id_journee = $proJournee
+                                                               order by m.date_match");
 		}
 		else
 		{
@@ -71,27 +71,25 @@
 			
 			
 			$req_match_journee=$bdd->query("SELECT e1.id_equipe as id_e1,
-										   e1.nom_equipe as nom_e1,
-										   e2.id_equipe as id_e2,
-										   e2.nom_equipe as nom_e2,
-										   m.id_match,
-										   m.date_match 
-										   FROM `match` m 
-										   JOIN equipe as e1 ON e1.id_equipe = m.id_equipe_dom 
-										   JOIN equipe as e2 ON e2.id_equipe = m.id_equipe 
-										   WHERE (m.date_match-$ToD) > 0 
-										   AND (m.id_equipe_dom = $equipe_co OR m.id_equipe = $equipe_co)
-										   order by m.date_match");
-										   			
-							    
-					  
+                                                               e1.nom_equipe as nom_e1,
+                                                               e2.id_equipe as id_e2,
+                                                               e2.nom_equipe as nom_e2,
+                                                               m.id_match,
+                                                               m.date_match,
+                                                               m.top_annulation_match,
+                                                               m.nb_but_equipe1,
+                                                               m.nb_but_equipe2
+                                                               FROM `match` m 
+                                                               JOIN equipe as e1 ON e1.id_equipe = m.id_equipe_dom 
+                                                               JOIN equipe as e2 ON e2.id_equipe = m.id_equipe 
+                                                               WHERE (m.date_match-$ToD+1) > 0 
+                                                               AND (m.id_equipe_dom = $equipe_co OR m.id_equipe = $equipe_co)
+                                                               order by m.date_match");
 		}
 	
 		/************ Fin Requetes  ************/
 	?>
-  
-  
-   
+ 
     <div id="site_content">
       
 	<?php
@@ -99,69 +97,111 @@
 	?>      
 	
 
-      <div class="content">
-		   <img style="float: left; vertical-align: middle; margin: 0 10px 0 0;" src="images/browser.png" alt="home" /><h1 style="margin: 15px 0 0 0;">Calendrier</h1>
+    <div class="content">
+        <img style="float: left; vertical-align: middle; margin: 0 10px 0 0;" src="images/browser.png" alt="home" /><h1 style="margin: 15px 0 0 0;">Calendrier</h1>
 		  
-		  <!--   Div de modification de match -->
-		  <div id="modification_match" style="visibility:hidden" class="form_modif" >
+	<!--   Div de modification de match -->
+        <div id="modification_match" style="visibility:hidden" class="form_modif" >
 		  	
-		  </div>
+        </div>
 		  <!--   Fin Div de modification de match -->
 		
 		   
 		   
         <!------ Calendrier -------->
-				<table id="hor-minimalist-b" summary="Employee Pay Sheet">
-				    <thead>
-				    	<tr>
-				        	<th scope="col">Date</th>
-				            <th scope="col"></th>
-				            <th scope="col">Score</th>
-				            <th scope="col"></th>
-				            <th scope="col">Statut</th>
-				            <?php
-				              if(isset($_SESSION['id_adherent']))
-						      {
-								  echo'<th scope="col"></th>';
-								  if($_SESSION['top_admin'] == 1)
-								  {
-								  	echo'<th scope="col"></th>';
-								  	echo'<th scope="col"></th>';
-								  }
-							   }
-				            
-				            ?>
-				        </tr>
-				    </thead>
-				    <tbody>
-				    	
-				    	<?php
-				    		while ($match_journee = $req_match_journee->fetch(PDO::FETCH_OBJ)) 
-				    		{
-				    			$explo = explode("-",$match_journee->date_match);
-								$dateMatch = $explo[2]."/".$explo[1]."/".$explo[0];
-							
-								echo '<tr>';				    			
-						        	echo '<td>'.$dateMatch.'</td>';
-						            echo '<td>'.$match_journee->nom_e1.'</td>';
-						            echo '<td>-</td>';
-						            echo '<td>'.$match_journee->nom_e2.'</td>';
-						            echo '<td></td>';
-						            if(isset($_SESSION['id_adherent']))
-						            {
-							           echo '<td><a style="cursor:pointer" HREF="participation.php?&num='.$match_journee->id_match.'"><img alt="" src="picto/bouton_participe.png" /></a></td>';
-									   if($_SESSION['top_admin'] == 1)
-									   {
-										   echo '<td><img style="cursor:pointer"  onclick="suppression('.$match_journee->id_match.')" alt="" src="picto/bouton_supprime.png" /></td>';
-										   echo '<td><a href="#modification_match"><img style="cursor:pointer"  onclick="modification('.$match_journee->id_match.')" alt="" src="picto/bouton_modifie.png" /></a></td>';
-									   }
-						            }
-						            
-						       echo '</tr>';
-					        }
-				        ?>
-				    </tbody>
-				</table>
+        <table id="hor-minimalist-b" summary="Employee Pay Sheet">
+            <thead>
+		<tr>
+                    <th scope="col">Date</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col" class="tableCenter">Score</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col">Statut</th>
+                    
+                    <?php
+                        if(isset($_SESSION['id_adherent']))
+                        {
+                            if($_SESSION['top_admin'] == 1)
+                            {   echo'<th scope="col">Supp</th>';
+                                echo'<th scope="col">Board</th>';
+                            }
+                        }
+                    ?>
+                
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    while ($match_journee = $req_match_journee->fetch(PDO::FETCH_OBJ)) 
+                    {
+                    $explo       = explode("-",$match_journee->date_match);
+                    $dateMatch   = $explo[2]."/".$explo[1]."/".$explo[0];
+                    $matchAnnule = $match_journee->top_annulation_match;
+
+                    echo '<tr>';				    			
+                        echo '<td>'.$dateMatch.'</td>';
+                        echo '<td>'.$match_journee->nom_e1.'</td>';
+                        if ($matchAnnule != 0)
+                        {
+                            echo '<td></td>';
+                            echo '<td class ="tableCenter" style="color:red;">MATCH ANNULE</td>';
+                            echo '<td></td>';
+                        }
+                        else
+                        {    
+                            echo '<td class ="tableleft">'.$match_journee->nb_but_equipe1.'</td>';
+                            echo '<td class ="tableCenter">-</td>';
+                            echo '<td class ="tableLeft">'.$match_journee->nb_but_equipe1.'</td>';
+                        }
+                        
+                        echo '<td>'.$match_journee->nom_e2.'</td>';
+                        
+                        if(isset($_SESSION['id_adherent']) && $matchAnnule == 0)
+                        {
+                            echo '<td><a style="cursor:pointer" HREF="participation.php?&num='.$match_journee->id_match.'"><img alt="" src="picto/bouton_participe.png" /></a></td>';
+                            if($_SESSION['top_admin'] == 1)
+                            {
+                                echo '<td><img style="cursor:pointer"  onclick="suppression('.$match_journee->id_match.')" alt="" src="picto/bouton_supprime.png" /></td>';
+                                echo '<td><a href="participation_board.php?&num='.$match_journee->id_match.'"><img style="cursor:pointer"  onclick="modification('.$match_journee->id_match.')" alt="" src="picto/bouton_modifie.png" /></a></td>';
+                            }
+                        }
+                        else //match annule
+                        {
+                            if(isset($_SESSION['id_adherent']) && $_SESSION['top_admin'] != 1)
+                            {   
+                                if($matchAnnule == 2) echo '<td style="color:red;">Repas organisé</td>';
+                                else echo '<td></td>';
+                            }
+                            
+                            if(isset($_SESSION['id_adherent']) && $_SESSION['top_admin'] == 1)
+                            {
+                                if($matchAnnule == 2)
+                                {
+                                    echo '<td colspan="2" style="color:red;">Repas organisé</td>';
+                                    
+                                }
+                                else 
+                                {
+                                    echo '<td></td>';
+                                    echo '<td></td>';
+                                    echo '<td></td>';
+                                }
+                                echo '<td></td>';
+                            }
+                            if(isset($_SESSION['id_adherent']) == false)
+                            {
+                              if($matchAnnule == 2) echo '<td style="color:red;">REPAS</td>';
+                              else echo '<td></td>';
+                            }    
+                        }    
+                    }
+                    echo '</tr>';
+                    
+                ?>
+            </tbody>
+        </table>
 				<!------- Fin Calendrier -->
         
       </div>

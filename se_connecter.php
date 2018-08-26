@@ -33,7 +33,10 @@
 			$pseudo = strtoupper($_POST['pseudo']);
 			$req_trouve_pseudo =  $bdd->query("SELECT * FROM adherent WHERE UPPER(login_adherent) = '$pseudo'");
 			$trouve_pseudo = $req_trouve_pseudo->fetch(PDO::FETCH_OBJ);
-			
+			$req_liste_saison = $bdd->query("SELECT * FROM saison where top_cloture_saison = 0");
+                        $trouve_saison = $req_liste_saison->fetch(PDO::FETCH_OBJ);
+                               
+                        
 			if(!empty($trouve_pseudo))
 			{
 				if(md5($_POST['pass']) == $trouve_pseudo->pass_adherent)
@@ -42,7 +45,7 @@
 						$_SESSION['login'] = $trouve_pseudo->login_adherent;
 						$_SESSION['top_admin'] = $trouve_pseudo->top_admin;
 						$_SESSION['id_equipe'] = $trouve_pseudo->id_equipe;
-						
+						$_SESSION['id_saison'] = $trouve_saison->id_saison;
 				}
 				else
 				{		
