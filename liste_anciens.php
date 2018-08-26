@@ -56,14 +56,14 @@
         <?php
         while ($liste_adherent = $req_liste_adherent->fetch(PDO::FETCH_OBJ)) 
 		{
-        	echo '<li>';
+        	echo '<li><a HREF="consultation_adherent.php?&num='.$liste_adherent->id_adherent.'">';
         	if($liste_adherent->top_admin == 1) 
         		echo '<img src="images/siflet.gif" title="admin"/>    --    '; 
         	else  
         		echo '<img src="images/sans_siflet.gif" title="non admin"/>    --    ';
         		        	echo $liste_adherent->nom_adherent.' '.$liste_adherent->prenom_adherent.' ------ '.$liste_adherent->login_adherent;
 
-        	echo '</li>';
+        	echo '</a></li>';
         }
         ?>
         </ul>

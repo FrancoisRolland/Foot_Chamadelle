@@ -1,8 +1,8 @@
 <?php
 	session_start();
 	include('connexion.php');
+        //header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 ?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 
@@ -17,10 +17,10 @@
   <script type="text/javascript" src="js/modernizr-1.5.min.js"></script>
 </head>
 
-<body>
+
   <div id="main">
    
-   <?php
+    <?php
    		include('header.php');
    	
 		/************ Requetes  ************/
@@ -38,9 +38,18 @@
 		$telephone = $infos_adherent->telephone_adherent;	
 		$telephone2 = $infos_adherent->telephone2_adherent;	
 		$telephone3 = $infos_adherent->telephone3_adherent;	
-		$mail = $infos_adherent->mail_adherent;			 
+		$mail = $infos_adherent->mail_adherent;			
+		$derniere_modif = explode("-" , $infos_adherent->dernier_modif);
+		$dermodifannee = $derniere_modif[0];
+		$dermodifmois = $derniere_modif[1];
+		$dermodifjour = $derniere_modif[2];
+		$datedernieremodif = $dermodifjour."/".$dermodifmois."/".$dermodifannee;
+                $password_Adherent = $infos_adherent->pass_adherent;
+                $pass1 = md5($password_Adherent);
 		/************ Fin Requetes  ************/
-	?>
+		
+                
+    ?>
   
   
    
@@ -55,10 +64,9 @@
        
         <!------ Début Formulaire ------- -->
 
-         <form  id="form_co" name="form_co" method="GET" action="" onsubmit="return verification_form()" >
+        <form  id="form_co" name="form_co" method="POST" action="profil_post.php" onsubmit="return verification_form()" >
           <div class="form_settings">
-          
-                       
+                        
             <p>
             	<span>Nom</span>
             	<input class="contact" type="text" name="nom" id="nom" value="<?php echo $nom; ?>" />
@@ -92,18 +100,18 @@
             
             <p>
             	<span>Ville</span> 
-				<input class="contact" type="text" name="ville" id="ville" value="<?php echo $ville;?>" />
+		<input class="contact" type="text" name="ville" id="ville" value="<?php echo $ville;?>" />
             	<label class="error" id="ville_error">Erreur sur ce champs</label>  
             </p>
             </br>
             <p>
-            	<span>Téléphones Mobile</span>
-				<input class="contact" onkeypress="verifInt()" maxlength="10" type="text" name="telephone" id="telephone" value="<?php echo $telephone;?>" />
+            	<span>Téléphone Mobile</span>
+		<input class="contact" onkeypress="verifInt()" maxlength="10" type="text" name="telephone" id="telephone" value="<?php echo $telephone;?>" />
             	<label class="error" id="tel_error">Erreur sur ce champs</label>  
             </p>
             
             <p>
-                <span>Téléphone</span>
+                <span>Téléphone fixe</span>
             	<input class="contact" onkeypress="verifInt()" maxlength="10" type="text" name="telephone2" id="telephone2" value="<?php echo $telephone2;?>" />
             	<label class="error" id="tel2_error">Erreur sur ce champs</label>  
             </p>
@@ -116,13 +124,40 @@
             </br>
             <p>
             	<span>Adresse mail</span>
-				<input class="contact" type="text" name="mail" id="mail" value="<?php echo $mail;?>" />
+		<input class="contact" type="text" name="mail" id="mail" value="<?php echo $mail;?>" />
             	<label class="error" id="mail_error">Erreur sur ce champs</label>  
             </p>
             </br>
-            <p><a style="text-decoration:underline" HREF="modif_mdp.php?&id_adherent=<?php echo $id;?> ">Modifier son mot de passe </a></p>
-
+            <p>
+            	<span>Pseudo</span>
+                <input class="pseudo" type="text" name="pseudo" value="<?php echo $login;?>" disabled="disabled" />
+            </p>
+            </br>
             
+            <!------ Modification du mot de passe ---->
+            <p>
+            </br>
+                <a  style="cursor:pointer" title="Cliquez sur le lien pour changer le mot de passe" onclick="plus()">Modifier son mot de passe </a>
+            </br>
+                <span style="display:none" id="labelpass1">Nouveau mot de passe</span>
+                <input type="password" name="pass1" style="display:none" id="pass1" value="<?php echo $pass1;?>"/>
+                <span style="display:none" id="labelpass2">Confirmation mot de passe</span>
+                <input type="password" name="pass2" style="display:none" id="pass2" value="<?php echo $pass1;?>"/>
+                <label class="error" id="pass2_error">Mot de passe différent</label>
+            </br>
+
+                <!-----<a style="text-decoration:underline" HREF="modif_mdp.php?&id_adherent=<?php echo $id;?> ">Modifier son mot de passe </a></p>----->
+            <p>
+                
+            <!--<div id="cadre" style="margin-left:100px;width:200px">
+            </div>-->
+              
+            	<span>Dernière modification</span>
+                <input type="text" name="datedernieremodif" value="<?php echo $datedernieremodif;?>" disabled="disabled" />
+            </p>
+            <p>
+                    <input type="hidden" name="id" value="<?php echo $id;?>" />
+            </p>        
             <p style="padding-top: 15px"><span>&nbsp;</span>
             <input class="submit" type="submit" name="inscription" id="inscription" value="Modifier" /></p>
           </div>
@@ -134,9 +169,7 @@
     <?php
 	/************* Requete de mise à jour **************/
     
-    
-    
-    
+      
     include('footer.php');
     ?>
   </div>
@@ -145,34 +178,54 @@
   <script type="text/javascript" src="js/jquery.easing-sooper.js"></script>
   <script type="text/javascript" src="js/jquery.sooperfish.js"></script>
   <script type="text/javascript">
-  $('.error').hide(); 
+  
+   $('.error').hide(); 
    var testPseudo = false;
+   var c,c2, ch1, ch2;
+   var pass1 = $("input#pass1").val(); 
+   var pass2 = $("input#pass2").val(); 
+	
+ 
+    // ajouter un champ avec son "name" propre;
+    function plus(){
+    
+    document.getElementById('labelpass1').style.display='inline';
+    document.getElementById('labelpass2').style.display='inline';
+    document.getElementById('pass1').style.display='inline';
+    document.getElementById('pass1').value="";
+    document.getElementById('pass2').style.display='inline';
+    document.getElementById('pass2').value="";
+    
+    //c.appendChild(ch1);
+    //c.appendChild(ch2);
+    
+    }
+     
+   /*********** Fin fonction ajouter champ *************/
+  
   function verification_form()
   {
-  	
-  	
   	$('.error').hide();  
   	var argument = "";
 	var equipe = $('#equipe option:selected').val();
 	var nom = $("input#nom").val();  
 	var prenom = $("input#prenom").val(); 
 	var pseudo = $("input#pseudo").val(); 
-    var pass = $("input#pass").val(); 
-	var pass2 = $("input#pass2").val(); 
-	var mail = $("input#mail").val(); 
+        var mail = $("input#mail").val(); 
 	var mail2 = $("input#mail2").val(); 
 	var adresse = $("input#adresse").val(); 
 	var cp = $("input#cp").val(); 
 	var ville = $("input#ville").val(); 
 	var tel = $("input#telephone").val(); 
-	var date = $("input#date").val();  
 	var tel2 = $("input#telephone2").val(); 
 	var tel3 = $("input#telephone3").val();  
-		     
-	   
+	var date = $("input#date").val();  
+        var pass1 = $("input#pass1").val(); 
+        var pass2 = $("input#pass2").val(); 
+	
 	//argument += "equipe=" + equipe  
 	
-	if (nom == "") 
+	if (nom === "") 
 	{  
 		$("label#nom_error").show();  
 		$("input#nom").focus();  
@@ -180,7 +233,7 @@
 	}  
 	//argument += "&nom=" + nom  
 	
-	if (prenom == "") 
+	if (prenom === "") 
 	{  
 		$("label#prenom_error").show();  
 		$("input#prenom").focus();  
@@ -188,14 +241,14 @@
 	}  
 	//argument += "&prenom=" + prenom  
    
-	if (mail == "" || !verifiermail(mail)) 
+	if (mail === "" || !verifiermail(mail)) 
 	{  
 		$("label#mail_error").show();  
 		$("input#mail").focus();  
 		return false;  
 	}  
 		      
-	if (adresse == "") 
+	if (adresse === "") 
 	{  
 		$("label#adresse_error").show();  
 		$("input#adresse").focus();  
@@ -203,15 +256,15 @@
 	}  
    //argument += "&adresse=" + adresse  
 		      
-   if (cp == "") 
-   {  
+        if (cp === "") 
+        {  
    		$("label#cp_error").show();  
 		$("input#cp").focus();  
 		return false;  
 	} 
 	//argument += "&cp=" + cp  
 	
-	if (ville == "") 
+	if (ville === "") 
 	{  
 		$("label#ville_error").show();  
 		$("input#ville").focus();  
@@ -219,22 +272,47 @@
 	} 
 	 //argument += "&ville=" + ville  
 		     
-	if (tel == "") 
+	if (tel === "") 
 	{  
 		$("label#tel_error").show();  
 		$("input#telephone").focus();  
 		return false;  
 	}
 	
+	/*if (tel2 == "") 
+	{  
+		$("label#tel2_error").show();  
+		$("input#telephone2").focus();  
+		return false;  
+	}
+
+	if (tel3 == "") 
+	{  
+		$("label#tel3_error").show();  
+		$("input#telephone3").focus();  
+		return false;  
+	}*/
 	//argument += "&tel=" + tel + "&date=" + date + "&tel2" + tel2 + "&tel3" + tel3	  
+        
+        if (pass1 !== pass2) 
+	{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+            $("label#pass2_error").show();  
+            $("input#pass2").focus();  
+            return false;  
+	}
+        else 
+        {
+            pass2 === pass1;
+            alert("Modification reussie");
+        }    
   }
   
   
 	  $(document).ready(function() {
 		  $('ul.sf-menu').sooperfish();
-		  $('.top').click(function() {$('html, body').animate({scrollTop:0}, 'fast'); return false;});
+		  $('.top').click(function() {$('html, body').animate({scrollTop:0}, 'fast'); return false;});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 		  
-	   });
+                });
 
 		function verifInt() 
 		{	
@@ -257,58 +335,6 @@
 				
 		
   </script>
-  <?php		
-  		/*********************** CONTROLE DES VALEURS ************************/
-		if( isset($_GET['inscription']) )
-		{
-			$today = ('Y-m-d');
-			$message = null;
+        		
 	
-			if(isset($_GET['nom']) && isset($_GET['prenom']) && isset($_GET['datenaissance']) )
-			{
-				$nom=$_GET['nom'];
-				$equipe=$_GET['equipe'];
-				$prenom=$_GET['prenom'];
-				$pseudo=$_GET['pseudo'];
-				$pass=$_GET['pass'];
-				$datenaissance=$_GET['datenaissance'];
-			    $dat = explode("/",$datenaissance);
-			    $annee = $dat[2];
-				$mois = $dat[1];
-				$jour = $dat[0];
-
-			}	
-				
-			if(isset($_GET['adresse']) && isset($_GET['cp']) && isset($_GET['ville']) && isset($_GET['tel']) && isset($_GET['tel2']) && isset($_GET['tel3']) && isset($_GET['mail']))
-			{
-				$adresse=$_GET['adresse'];
-				$cp=$_GET['cp'];
-				$ville=$_GET['ville'];
-				$telephone=$_GET['tel'];
-				$telephone2=$_GET['tel2'];
-				$telephone3=$_GET['tel3'];
-				$mail=$_GET['mail'];
-			}
-			/*********************** FIN CONTROLE DES VALEURS ************************/
-		
-		
-
-			/*********************** CONSTRUCTION ET ENVOI DE LA REQUETE ************************/
-		
-				$insertion="UPDATE adherent SET nom_adherent = '$nom', prenom_adherent='$prenom', rue_adherent='$adresse', code_postale_adherent='$cp',bureau_distributeur_adherent='$ville' ,telephone_adherent='$telephone',telephone2_adherent='$telephone2',telephone3_adherent='$telephone3', mail_adherent='$mail', date_naissance_adherent = '".$annee."-".$mois."-".$jour."', dernier_modif='$today' WHERE id_adherent='$id'";
-			
-             	
-             	
-             	$inser_exec = $bdd->exec($insertion);
-						
-	         	
-		
-			 			 header('Location:index.php');
-	}
-	         
-?>
-		 
-
-  
-</body>
 </html>
